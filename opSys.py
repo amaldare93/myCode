@@ -1,30 +1,61 @@
 from collections import deque
 pid_counter = 0
-
+print_count = 0
 #FUNCTIONS
 ## generates queues for hardware
 def queue_gen(ch, num):
 	key = str(ch + str(num))
 	sys[key] = deque()
+	#dev_cat[ch].append(key)
 
 ## new PCB
 def new_PCB():
 	global pid_counter
-	sys['r'].appendleft({'pid': pid_counter, 'params': {'file_name': ' ', 'start_loc': 0, "r/w": '', 'file_length': ''}})
+	sys['r'].appendleft({'pid': pid_counter, 'file_name': ' ', 'start_loc': 0, "r/w": '', 'file_length': ''})
 	pid_counter += 1
 
-## snapshot
-def snapshot():
-	queue = input("which queue do you want to see? ")
+def scrollcheck():
+	global print_count
+	if print_count == 23:
+		enter = input("press ENTER to see more ... ")
+		print_count = 0
+	print_count += 1
 
-	# safeguard
+## snapshot
+def snapshot(queue):
+	global print_count
+	print_count = 0
+
+	if queue == 'd': num = n_disk
+	elif queue == 'c': num = n_CDRW
+	elif queue == 'p': num = n_print
+
 	if queue == "all":
-		for q in sys:
-			print(q, ":", list(sys[q]), '->')
-	elif queue not in sys: 
-		print("that device is not in the system")
+		snapshot('r')
+		snapshot('d')
+		snapshot('c')
+		snapshot('p')
+
+	elif queue == 'r':
+		scrollcheck()
+		print('PID')
+		for q in ('cpu1', 'r'):
+			scrollcheck()
+			print('---' + q)
+			for pcd in reversed(sys[q]):
+				scrollcheck()
+				print(pcd['pid'])
 	else:
-		print(list(sys[queue]), '->')
+		queues = [str(queue + str(i)) for i in range(1, num+1)]
+		scrollcheck()
+		print('{0:<4} {1:<16} {2:>10} {3:^1} {4:<10}'.format('PID', '| File name', '| Memstart', '| R/W', '| File Length'))
+		for q in queues:
+			scrollcheck()
+			print('---' + q)
+			for pcd in reversed(sys[q]):
+				scrollcheck()
+				print('{0:<6} {1:<14} {2:>10} {3:^7} {4:>11}'.format(pcd['pid'], pcd['file_name'], pcd['start_loc'], pcd['r/w'], pcd['file_length']))
+
 
 ## makes sure CPU is always full
 def cpu_check(cpu):
@@ -49,17 +80,17 @@ def send_proc(cpu, queue):
 	if len(sys[cpu]) != 0:
 		tmp = sys[cpu].pop()
 
-		tmp['params']['file_name'] = input("file name: ")
+		tmp['file_name'] = input("file name: ")
 
-		tmp['params']['start_loc'] = input("starting location: ")
+		tmp['start_loc'] = input("starting location: ")
 
 		if 'p' in queue: 
-			tmp['params']['r/w'] = 'w'
+			tmp['r/w'] = 'w'
 		else:
-			tmp['params']['r/w'] = input("read or write? (r/w): ")
+			tmp['r/w'] = input("read or write? (r/w): ")
 
-		if tmp['params']['r/w'] == 'w':
-			tmp['params']['file_length'] = input("file length: ")
+		if tmp['r/w'] == 'w':
+			tmp['file_length'] = input("file length: ")
 
 		sys[queue].appendleft(tmp)
 
@@ -69,20 +100,17 @@ def finish_proc(queue):
 
 #system generation
 ##user input
-'''
 print('Welcome to System Generation')
+
+n_cpu = 1
 n_disk = int(input('How many disks are there?: '))
 n_CDRW = int(input('How many CD/RW are there?: '))
 n_print = int(input('How many printers are there?: '))
-'''
-n_cpu = 1
-n_disk = 1
-n_CDRW = 1
-n_print = 1
 
 ##generate queues
 
 sys = {}
+dev_cat = {}
 queue_gen('r', '')
 for i in range(1, n_cpu+1):
 	queue_gen('cpu', i)
@@ -98,12 +126,15 @@ for i in range(1, n_print+1):
 ##init system commands
 def switch(x): 
 	if x == 'A': new_PCB()
-	elif x == 'S': snapshot()
+	elif x == 'exit': return
+	elif x == 'Sr': snapshot('r')
+	elif x == 'Sd': snapshot('d')
+	elif x == 'Sc': snapshot('c')
+	elif x == 'Sp': snapshot('p')
+	elif x == 'Sall': snapshot('all')
 	elif x == 't': terminate('cpu1')
 	elif len(x) > 1: interpret(x)
-	elif x == 'exit': return
 	else: print("that is not a valid command")
-	#'help': commands(),
 
 #running
 command = ' '
