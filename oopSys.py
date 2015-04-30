@@ -1,5 +1,4 @@
-from collections import deque
-from queue import PriorityQueue
+import queue
 print_count = 0
 
 
@@ -14,6 +13,7 @@ class System:
 			self.n_print = 1
 			PCB.alpha = 0.5
 			PCB.tao = 2.0
+			Disk.M = 15
 
 		# DEFAULT GENERATION (input parameters)
 		else:
@@ -22,6 +22,7 @@ class System:
 
 			self.n_disk = int(getInput('Disks: ', lambda x: int(x) > 0, def_except))
 			Disk.cylinders = int(getInput('# of Cylinders: ', lambda x: int(x) > 0, def_except))
+			Disk.M = int(getInput('Max time for disk starvation: ', lambda x: int(x) > 0, def_except))
 			self.n_CDRW = int(getInput('CDRWs: ', lambda x: int(x) > 0, def_except))
 			self.n_print = int(getInput('Printers: ', lambda x : int(x) > 0, def_except))
 			PCB.alpha = float(getInput('History Parameter: ', lambda x: 0 <= float(x) <= 1, 'Error: Value must be between 0 and 1'))
@@ -45,6 +46,10 @@ class System:
 			return self.cat[ key[0] ]
 
 	def newProcess(self):
+		if not self['r'].isEmpty(): 
+			temp = self['r'].pop()
+			temp.intUpdate()
+			self['r'].push( temp )
 		self['r'].push( PCB(self.pid_counter) )
 		self.pid_counter += 1
 
@@ -107,9 +112,9 @@ class System:
 				elif self[x] and x[0] != 'r':
 					self[x].systemCall( self['r'].pop() )
 				else: 
-					raise#print('That is not a valid command. Try again.')
+					print('That is not a valid command. Try again.')
 			except:
-				raise#print('That is not a valid command. Try again.')
+				print('That is not a valid command. Try again.')
 
 class PCB():
 	def __init__(self, pid):
@@ -139,13 +144,10 @@ class PCB():
 		t_prev = int(getInput('How long (ms) did current process use CPU?: ', lambda x : int(x) >= 0))
 
 		# STF priority
-		#self.tao = (self.alpha * self.tao) + ((1 - self.alpha) * t_prev)
-		self.priority = self.tao - t_prev
+		self.priority = self.priority - t_prev
 
 		# proccess stats
 		self.totalCPU += t_prev
-		#self.numBursts += 1
-		#self.avgBurst = self.totalCPU / self.numBursts
 		
 class Componant:
 
@@ -179,7 +181,7 @@ class Componant:
 
 class Ready(Componant):
 	def __init__(self):
-		self.container = PriorityQueue()
+		self.container = queue.PriorityQueue()
 		self.key = 'r'
 
 	def snap(self):
@@ -198,10 +200,10 @@ class Ready(Componant):
 
 class Disk(Componant):
 	def __init__(self, id):
-		self.container = PriorityQueue()
+		self.container = queue.PriorityQueue()
 		self.key = 'd' + str(id)
 		self.RWhead = self.cylinders / 2
-		self.M = 15
+		
 
 	def systemCall(self, pcb):
 		if pcb != None:
@@ -212,8 +214,9 @@ class Disk(Componant):
 			pcb.params['r/w'] = input('Read or Write? (r/w): ')
 			pcb.params['file_length'] = input('File Length: ') if pcb.params['r/w'] == 'w' else ''
 			pcb.params['elapsed'] = 0
+			pcb.priority = abs(self.RWhead - pcb.params['cylinder'])
 			self.push( pcb )
-			self.WSTF()
+			
 
 	def snap(self):
 		global print_count
@@ -238,12 +241,12 @@ class Disk(Componant):
 		
 class CDRW(Componant):
 	def __init__(self, id):
-		self.container = PriorityQueue()
+		self.container = queue.Queue()
 		self.key = 'c' + str(id)
 
 class Printer(Componant):
 	def __init__(self, id):
-		self.container = PriorityQueue()
+		self.container = queue.Queue()
 		self.key = 'p' + str(id)
 
 def scrollcheck():
@@ -261,7 +264,7 @@ def getInput(prompt, condition, exception='That is not a valid input'):
 				return var
 			else: raise
 		except KeyboardInterrupt: raise
-		except: raise#print(exception)
+		except: print(exception)
 
-system = System(1)
+system = System()
 system.run()
