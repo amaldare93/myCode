@@ -1,9 +1,9 @@
 '''
 	Work out the first ten digits of the sum of the following one-hundred 50-digit numbers.
 '''
-
 def euler013(numbers):
-	pass
+
+	return str(sum([int(line) for line in numbers.split()]))[:10]
 
 
 numbers = '\
