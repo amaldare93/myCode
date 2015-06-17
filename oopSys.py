@@ -193,7 +193,7 @@ class System:
 				elif self[x] and x[0] != 'r':
 					self[x].systemCall( self['r'].pop() )
 			except:
-				raise #print('That is not a valid command. Try again.')
+				print('That is not a valid command. Try again.')
 # Process Control Block
 class PCB():
 	def __init__(self, pid, size):
@@ -391,5 +391,5 @@ def getInput(prompt, condition, exception='That is not a valid input'):
 		except KeyboardInterrupt: raise
 		except: print(exception)
 
-system = System(True)
+system = System()
 system.run()
