@@ -1,5 +1,5 @@
 ''''
-By starting at the top of the triangle and moving to adjacent numbers on the row below, 
+By starting at the top of the triangle and moving to adjacent numbers on the row below,
 	the maximum total from top to bottom is 27.
 
        5
@@ -67,14 +67,3 @@ while index != (rows,0):
 	index = next(index)
 
 print('max count =', max_count)
-
-
-
-
-
-
-
-
-
-
-

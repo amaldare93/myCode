@@ -21,7 +21,7 @@ grid = '08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08 \
 		04 42 16 73 38 25 39 11 24 94 72 18 08 46 29 32 40 62 76 36 \
 		20 69 36 41 72 30 23 88 34 62 99 69 82 67 59 85 74 04 36 16 \
 		20 73 35 29 78 31 90 01 74 31 49 71 48 86 81 16 23 57 05 54 \
-		01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48'  
+		01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48'
 
 
 
@@ -32,7 +32,7 @@ def euler011(grid):
 	diagUp = 0
 	for i in range(400):
 		# all directions
-		if i % 20 < 17 and i - 60 >= 0 and i + 60 < 399: 
+		if i % 20 < 17 and i - 60 >= 0 and i + 60 < 399:
 			right = grid[i] * grid[i+1] * grid[i+2] * grid[i+3]
 			down = grid[i] * grid[i+20] * grid[i+40] * grid[i+60]
 			diagDwn = grid[i] * grid[i+21] * grid[i+42] * grid[i+63]
@@ -45,7 +45,7 @@ def euler011(grid):
 			diagDwn = grid[i] * grid[i+21] * grid[i+42] * grid[i+63]
 
 		# right and up
-		elif i % 20 < 17 and i - 60 >= 0: 
+		elif i % 20 < 17 and i - 60 >= 0:
 			right = grid[i] * grid[i+1] * grid[i+2] * grid[i+3]
 			diagUp = grid[i] * grid[i-19] * grid[i-38] * grid[i-57]
 
@@ -60,6 +60,4 @@ def euler011(grid):
 	return largest
 
 print(euler011(grid))
-70600674
-
-
+# 70600674

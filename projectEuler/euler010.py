@@ -14,7 +14,7 @@ def euler10(n=2000000):
 				return False
 		primes.append(num)
 		return True
-	
+
 	primes = [2, 3]
 	primeSum = 5
 	i = 5
@@ -25,7 +25,5 @@ def euler10(n=2000000):
 
 	return primeSum
 
-
-
-
 print(euler10())
+# 142913828922

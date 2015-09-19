@@ -30,5 +30,6 @@ def euler7(n):
 			if primeCount == n: return i+2
 		i += 6
 	return False
-	
+
 print(euler7(1000))
+# 7919

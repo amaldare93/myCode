@@ -6,7 +6,7 @@ def euler5(n):
 	num = 20
 	i = 11
 	while i < 21:
-		if num % i != 0: 
+		if num % i != 0:
 			i = 11
 			num += 20
 		else:
@@ -14,3 +14,4 @@ def euler5(n):
 	return num
 
 print(euler5(20))
+# 232792560

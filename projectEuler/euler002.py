@@ -1,4 +1,4 @@
-''' 
+'''
 	Find the sum of the even-valued terms in the Fibonacci sequence
 	whose values do not exceed four million (n)
 '''
@@ -10,4 +10,5 @@ def euler2(n):
 		i += 1
 	return sum([ i for i in fib if i % 2 == 0])
 
-print euler2( 4000000 )
+print(euler2( 4000000 ))
+# 4613732

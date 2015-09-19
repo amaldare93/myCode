@@ -15,24 +15,36 @@ NOTE: Once the chain starts the terms are allowed to go above one million.
 '''
 
 def euler014(limit=1000000):
-	i = 13
-	largest = 1
-	remainingFrom = {}
-	while i < limit:
-		n = i
-		count = 1
+	currentStart = 13
+	longestLength = 1
+	record = {}
+	# loop from 13 to 1000000
+	while currentStart < limit:
+		n = currentStart
+		currentLength = 1
+		# create sequence (stops at 1)
 		while n != 1:
-			if remainingFrom
 			if n % 2 == 0:
-				n /= 2
+				n = int(n / 2)
 			else:
 				n = 3 * n + 1
-			count += 1
-		if count > largest:
-			largest = count
-			largestStart = i
 
-		i += 1
+			# dynamic programming check
+			if n in record.keys():
+				print('using record for', n)
+				currentLength += record[n]
+				n = 1
+			else:
+				currentLength += 1
+		record[currentStart] = currentLength
+
+		#update longestLength
+		if currentLength > longestLength:
+			longestLength = currentLength
+			largestStart = currentStart
+
+		currentStart += 1
 	return largestStart
 
 print(euler014())
+# 837799

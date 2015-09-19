@@ -7,3 +7,4 @@ def euler6(n):
 
 
 print(euler6(100))
+# 25164150
